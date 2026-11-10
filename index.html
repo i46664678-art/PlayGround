@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#101513">
+  <title>DEAD AIR // Quarantine Zone</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="game-shell">
+    <canvas id="game" aria-label="First-person shooter game"></canvas>
+    <div class="scanlines"></div>
+    <div id="menu" class="screen">
+      <div class="menu-top"><div class="brand"><span class="brand-mark">D</span><span>DEAD AIR<small>FIELD OPERATIONS / 09</small></span></div><div class="status"><i></i> SIGNAL STABLE <b>•</b> SECTOR 04</div></div>
+      <section class="hero">
+        <div class="eyebrow"><span class="eyebrow-line"></span> THE OUTBREAK IS LIVE</div>
+        <h1>NO SAFE<br><em>GROUND.</em></h1>
+        <p class="hero-copy">One last run through the quarantine zone.<br>Keep moving. Keep breathing.</p>
+        <div class="mode-label">SELECT OPERATION <span>01 — 02</span></div>
+        <div class="mode-grid">
+          <button class="mode-card selected" data-mode="zombies">
+            <span class="mode-index">01 / SURVIVAL</span><span class="mode-icon zombie-icon">✳</span><strong>UNDEAD<br>WAVES</strong><span class="mode-desc">Hold the block. The dead don't stop.</span><span class="mode-action">ENTER OPERATION <b>↗</b></span>
+          </button>
+          <button class="mode-card" data-mode="prop">
+            <span class="mode-index">02 / HIDE & SEEK</span><span class="mode-icon prop-icon">▦</span><strong>PROP<br>HUNT</strong><span class="mode-desc">Blend in. Hunters are getting close.</span><span class="mode-action">ENTER OPERATION <b>↗</b></span>
+          </button>
+        </div>
+        <button id="deploy" class="deploy">DEPLOY <span>→</span></button>
+      </section>
+      <div class="menu-footer"><span>▣ &nbsp; TRAINING GROUND // DESERTED TOWN</span><span>WASD MOVE&nbsp;&nbsp; · &nbsp;&nbsp;MOUSE AIM&nbsp;&nbsp; · &nbsp;&nbsp;CLICK FIRE</span><span>BUILD 0.9.4</span></div>
+    </div>
+    <div id="hud" class="hidden">
+      <div class="hud-top"><div class="hud-brand"><span class="brand-mark">D</span><span>DEAD AIR <small>QUARANTINE / 04</small></span></div><div class="wave-box"><span id="wave-label">WAVE 01</span><b id="wave-state">INCOMING</b></div><button id="pause-btn" aria-label="Pause">Ⅱ</button></div>
+      <div class="mission"><span class="mission-dot"></span><span id="mission-text">ELIMINATE ALL HOSTILES</span><span class="mission-sub">SECTOR 04 — OLD TOWN</span></div>
+      <div class="hud-bottom"><div class="health-panel"><div class="panel-label">VITALS <span id="health-value">100</span></div><div class="health-track"><i id="health-bar"></i></div><div class="health-caption">FIELD CONDITION <b id="health-state">STABLE</b></div></div><div class="weapon-panel"><div class="weapon-meta"><span id="weapon-name">AK-47</span><span id="ammo-value">30 <i>/ 120</i></span></div><div id="weapon-art" class="weapon-art">╸━━━━━╾</div><div class="weapon-switch"><span><b>1</b> AK-47</span><span><b>2</b> RPG-7</span><span><b>R</b> RELOAD</span></div></div><div class="score-panel"><div class="panel-label">ELIMINATED</div><strong id="kill-value">00</strong><span>HOSTILES</span><div class="wave-small" id="wave-count">0 REMAINING</div></div></div>
+      <div id="toast" class="toast"></div>
+      <div class="crosshair"><i></i><b></b></div>
+      <div id="prop-hint" class="prop-hint hidden"><b>Q</b> CHANGE DISGUISE <span>STAY STILL TO BLEND IN</span></div>
+      <div class="mobile-controls"><button data-touch="fire">FIRE</button><button data-touch="reload">↻</button><button data-touch="switch">SWAP</button><div class="touch-stick" id="touch-stick"><i></i></div></div>
+      <div id="pause" class="pause-panel hidden"><div class="eyebrow">FIELD BRIEFING</div><h2>TAKE A BREATH.</h2><p>The dead won't.</p><button id="resume">BACK IN</button><button id="exit">ABORT OPERATION</button></div>
+      <div id="end-panel" class="pause-panel hidden"><div class="eyebrow">OPERATION COMPLETE</div><h2 id="end-title">SECTOR CLEARED.</h2><p id="end-copy">You made it out alive.</p><button id="again">RUN IT BACK</button><button id="back-menu">MAIN MENU</button></div>
+    </div>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
