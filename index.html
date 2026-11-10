@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#160f0a">
+  <meta name="description" content="DEAD DROP — a low-poly first-person shooter with zombie waves, prop hunt, AK-47s, RPGs and ragdoll kills.">
+  <title>DEAD DROP — Low-Poly FPS</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="game" aria-label="DEAD DROP game viewport"></canvas>
+
+  <div class="screen-fx" aria-hidden="true">
+    <div class="grain"></div>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+  </div>
+
+  <div id="menu" class="menu">
+    <div class="menu-shade" aria-hidden="true"></div>
+    <header class="topline">
+      <div class="wordmark"><span class="mark">DD</span><span>DEAD DROP</span></div>
+      <div class="topline-meta">
+        <span class="live-dot"></span>
+        <span>SECTOR 7 // 18:42</span>
+        <span class="build">BUILD 0.9.7</span>
+      </div>
+    </header>
+
+    <main class="menu-grid">
+      <section class="hero">
+        <div class="eyebrow"><span class="line"></span> LOW-POLY COMBAT SIMULATION <span class="tag">NO EXTRACTION</span></div>
+        <h1>DEAD<br><span>DROP</span></h1>
+        <p class="lede">Two ways to die in the dust. Hold the line against the horde, or hunt the things pretending to be furniture.</p>
+
+        <div class="mode-label">SELECT OPERATION</div>
+        <div class="modes" role="radiogroup" aria-label="Game mode">
+          <button class="mode-card selected" data-mode="zombie" role="radio" aria-checked="true">
+            <span class="mode-art art-zombie" aria-hidden="true">
+              <i class="sun"></i><i class="skyline"></i><i class="z-head"></i><i class="z-body"></i><i class="z-arm a"></i><i class="z-arm b"></i>
+            </span>
+            <span class="mode-copy">
+              <span class="mode-index">OP. 01</span>
+              <strong>ZOMBIE WAVES</strong>
+              <span>Endless horde. Escalating rounds. One arena.</span>
+            </span>
+            <span class="mode-stat"><b>∞</b> ROUNDS</span>
+            <span class="select-mark">DEPLOY</span>
+          </button>
+          <button class="mode-card" data-mode="prop" role="radio" aria-checked="false">
+            <span class="mode-art art-prop" aria-hidden="true">
+              <i class="sun"></i><i class="barrel"></i><i class="crate"></i><i class="eye"></i>
+            </span>
+            <span class="mode-copy">
+              <span class="mode-index">OP. 02</span>
+              <strong>PROP HUNT</strong>
+              <span>Eight mimics. Ninety seconds. Trust nothing.</span>
+            </span>
+            <span class="mode-stat"><b>08</b> MIMICS</span>
+            <span class="select-mark">DEPLOY</span>
+          </button>
+        </div>
+
+        <div class="launch-row">
+          <button id="playBtn" class="play-btn" aria-label="PLAY NOW">
+            <span class="play-label">PLAY NOW</span>
+            <span class="play-sub">CLICK TO DEPLOY</span>
+            <span class="play-arrow">↗</span>
+          </button>
+          <div class="launch-note">
+            <span id="modeNote">WAVE DEFENSE // ARENA LOCKED</span>
+            <small>Mouse + keyboard recommended · touch supported</small>
+          </div>
+        </div>
+      </section>
+
+      <aside class="intel">
+        <div class="intel-head">
+          <span>FIELD INTELLIGENCE</span>
+          <span class="intel-code">DD-7 / A</span>
+        </div>
+        <div class="intel-body">
+          <div class="brief-no">01</div>
+          <h2 id="briefTitle">THE HORDE<br>DOESN'T STOP.</h2>
+          <p id="briefText">Survive escalating waves of the infected. Headshots pay double. When it gets loud, introduce them to the RPG.</p>
+          <div class="intel-tags" id="briefTags"><span>ENDLESS</span><span>HEADSHOTS</span><span>RAGDOLLS</span></div>
+        </div>
+        <div class="controls">
+          <div class="controls-head">CONTROLS</div>
+          <div class="control-row"><span class="keys"><kbd>WASD</kbd></span><span>MOVE</span></div>
+          <div class="control-row"><span class="keys"><kbd>MOUSE</kbd><kbd>LMB</kbd></span><span>AIM / FIRE</span></div>
+          <div class="control-row"><span class="keys"><kbd>R</kbd><kbd>1</kbd><kbd>2</kbd></span><span>RELOAD / WEAPONS</span></div>
+          <div class="control-row"><span class="keys"><kbd>SPACE</kbd><kbd>SHIFT</kbd></span><span>JUMP / SPRINT</span></div>
+          <div class="control-row"><span class="keys"><kbd>Q</kbd></span><span>SCAN <em>PROP HUNT</em></span></div>
+          <div class="control-row"><span class="keys"><kbd>ESC</kbd></span><span>PAUSE</span></div>
+        </div>
+        <div class="intel-foot">
+          <span class="stamp">LIVE AMMO</span>
+          <span>RUSTBELT ARENA · 64×64M</span>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="menu-foot">
+      <span>© 2026 DEAD DROP / NO EXTRACTION PROTOCOL</span>
+      <span>LOW POLY. HIGH CALIBER.</span>
+      <span>WEBGL · 60 FPS TARGET</span>
+    </footer>
+  </div>
+
+  <div id="hud" class="hud hidden">
+    <div class="hud-top">
+      <div class="player-panel">
+        <div class="operator-row">
+          <span class="operator-icon">◈</span>
+          <div>
+            <div class="hud-kicker">OPERATOR</div>
+            <div class="operator-name">ROOK <span>// SECTOR 7</span></div>
+          </div>
+        </div>
+        <div class="health-row">
+          <div class="health-bar"><i id="healthFill"></i><span class="health-ticks"></span></div>
+          <b id="healthNum">100</b>
+        </div>
+        <div class="health-label"><span>VITALS</span><span id="healthState">STABLE</span></div>
+      </div>
+
+      <div id="objectivePanel" class="objective-panel">
+        <div class="objective-top"><span id="objectiveKicker">WAVE DEFENSE</span><span id="objectiveClock">--:--</span></div>
+        <div id="objectiveMain" class="objective-main">WAVE 01</div>
+        <div id="objectiveSub" class="objective-sub">HOSTILES INBOUND</div>
+        <div class="objective-track"><i id="objectiveTrack"></i></div>
+      </div>
+
+      <div class="score-panel">
+        <div class="hud-kicker">SCORE</div>
+        <div id="scoreNum" class="score-num">000000</div>
+        <div class="score-meta"><span>KILLS <b id="killNum">0</b></span><span>HS <b id="hsNum">0</b></span></div>
+      </div>
+    </div>
+
+    <div id="killfeed" class="killfeed" aria-live="polite"></div>
+    <div id="worldLayer" class="world-layer" aria-hidden="true"></div>
+
+    <div class="hud-bottom">
+      <div class="radar-wrap">
+        <canvas id="radar" width="176" height="176"></canvas>
+        <div class="radar-ring"></div>
+        <div class="radar-label"><span>LOCAL SCAN</span><b id="radarDist">RANGE 24M</b></div>
+      </div>
+
+      <div id="hintBar" class="hint-bar"><kbd>R</kbd> RELOAD <span>·</span> <kbd>Q</kbd> SCAN <span>·</span> <kbd>ESC</kbd> PAUSE</div>
+
+      <div class="weapon-panel">
+        <div id="reloadBar" class="reload-bar"><i></i><span>RELOADING</span></div>
+        <div class="ammo-line">
+          <div class="weapon-name"><span id="weaponSlot">01</span> AK-47 <small>ASSAULT RIFLE</small></div>
+          <div class="ammo"><b id="ammoNum">30</b><span id="ammoReserve">/ ∞</span></div>
+        </div>
+        <div class="weapon-pips" id="weaponPips">
+          <button data-weapon="ak" class="active"><span>1</span> AK-47<i></i></button>
+          <button data-weapon="rpg"><span>2</span> RPG-7<i></i></button>
+        </div>
+        <div class="charge-row"><span id="chargeLabel">SCAN READY</span><div class="charge-meter"><i id="scanFill"></i></div><b id="scanKey">Q</b></div>
+      </div>
+    </div>
+
+    <div id="crosshair" class="crosshair">
+      <i class="ch top"></i><i class="ch right"></i><i class="ch bottom"></i><i class="ch left"></i><i class="dot"></i>
+    </div>
+    <div id="hitmarker" class="hitmarker"><i></i><i></i><i></i><i></i></div>
+    <div id="damageFlash" class="damage-flash"></div>
+    <div id="lowHealth" class="low-health"></div>
+    <div id="banner" class="banner"><div class="banner-kicker">INCOMING</div><div class="banner-main">WAVE 01</div><div class="banner-sub">HOLD THE LINE</div></div>
+    <div id="pickupToast" class="pickup-toast"></div>
+    <div id="mouseHint" class="mouse-hint">CLICK TO CAPTURE MOUSE</div>
+  </div>
+
+  <div id="pause" class="modal-screen hidden">
+    <div class="modal-card pause-card">
+      <div class="modal-kicker">OPERATION SUSPENDED</div>
+      <h2>PAUSED</h2>
+      <p>The dust settles. Briefly.</p>
+      <div class="pause-stats">
+        <div><span>SCORE</span><b id="pauseScore">0</b></div>
+        <div><span>KILLS</span><b id="pauseKills">0</b></div>
+        <div><span>ACCURACY</span><b id="pauseAcc">0%</b></div>
+      </div>
+      <button id="resumeBtn" class="primary-btn">RESUME <span>↗</span></button>
+      <button id="restartBtn" class="ghost-btn">RESTART OPERATION</button>
+      <button id="quitBtn" class="ghost-btn">ABANDON / MAIN MENU</button>
+    </div>
+  </div>
+
+  <div id="endScreen" class="modal-screen hidden">
+    <div class="modal-card end-card">
+      <div id="endKicker" class="modal-kicker">OPERATION COMPLETE</div>
+      <h2 id="endTitle">SURVIVED</h2>
+      <p id="endText">The horde broke against you.</p>
+      <div class="end-grade"><span>FIELD GRADE</span><b id="endGrade">B</b></div>
+      <div class="end-stats">
+        <div><span>SCORE</span><b id="endScore">0</b></div>
+        <div><span>KILLS</span><b id="endKills">0</b></div>
+        <div><span>HEADSHOTS</span><b id="endHs">0</b></div>
+        <div><span>ACCURACY</span><b id="endAcc">0%</b></div>
+        <div><span>BEST WAVE</span><b id="endWave">1</b></div>
+        <div><span>TIME</span><b id="endTime">0:00</b></div>
+      </div>
+      <button id="retryBtn" class="primary-btn">REDEPLOY <span>↗</span></button>
+      <button id="menuBtn" class="ghost-btn">RETURN TO MAIN MENU</button>
+    </div>
+  </div>
+
+  <div id="touch" class="touch hidden">
+    <div id="stick" class="stick"><i id="stickKnob"></i><span>MOVE</span></div>
+    <div class="touch-right">
+      <button id="touchFire" class="touch-fire" aria-label="Fire">FIRE</button>
+      <button id="touchAim" class="touch-small" aria-label="Aim">ADS</button>
+      <div class="touch-stack">
+        <button id="touchJump" class="touch-small" aria-label="Jump">JUMP</button>
+        <button id="touchReload" class="touch-small" aria-label="Reload">RELOAD</button>
+        <button id="touchSwap" class="touch-small" aria-label="Swap weapon">SWAP</button>
+        <button id="touchScan" class="touch-small scan" aria-label="Scan">SCAN</button>
+      </div>
+    </div>
+    <button id="touchPause" class="touch-pause" aria-label="Pause">Ⅱ</button>
+  </div>
+
+  <div id="transition" class="transition" aria-hidden="true"></div>
+  <div id="bootError" class="boot-error hidden"></div>
+
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.js" } }
+  </script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
