@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#04070f" />
+  <meta name="description" content="VOIDBREAKER — a neon arcade survival shooter. Outgun the swarm, chain combos, and hold the line." />
+  <title>VOIDBREAKER — Neon Survival Shooter</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4 58 52 32 42 6 52Z' fill='%235ff7ff'/%3E%3Cpath d='M32 18 43 43 32 38 21 43Z' fill='%23050a14'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main id="app">
+    <canvas id="game" aria-label="VOIDBREAKER game arena"></canvas>
+
+    <!-- ── Title screen ─────────────────────────────────────────── -->
+    <section id="menu" class="menu">
+      <div class="menu-wash" aria-hidden="true"></div>
+      <header class="menu-top">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-name">VOIDBREAKER</span>
+          <span class="brand-tag">COMBAT SIM / 07</span>
+        </div>
+        <div class="signal">
+          <span class="signal-dot"></span>
+          <span>UPLINK STABLE</span>
+          <span class="signal-bars"><i></i><i></i><i></i><i></i></span>
+        </div>
+      </header>
+
+      <div class="menu-body">
+        <div class="hero-copy">
+          <div class="eyebrow"><span></span> DEEP-SPACE SURVIVAL PROTOCOL</div>
+          <h1 class="game-title" aria-label="Voidbreaker">
+            <span class="title-line title-top" data-text="VOID">VOID</span>
+            <span class="title-line title-bottom" data-text="BREAKER">BREAKER</span>
+          </h1>
+          <p class="lede">The last relay has gone dark. You are the only signal left. <br />Cut through the swarm. Hold the void.</p>
+
+          <div class="menu-actions">
+            <button id="startBtn" class="btn btn-primary" type="button" aria-label="Start Game">
+              <span class="btn-kicker">INITIATE</span>
+              <span class="btn-label">Start Game</span>
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </button>
+            <div class="run-spec">
+              <span><b>∞</b> ENDLESS ASSAULT</span>
+              <span><b>01</b> PILOT</span>
+            </div>
+          </div>
+
+          <div class="control-strip" aria-label="Controls">
+            <div class="control"><span class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span>MOVE</span></div>
+            <div class="control"><span class="mouse-icon" aria-hidden="true"></span><span>AIM</span></div>
+            <div class="control"><kbd class="wide">SPACE</kbd><span>DASH</span></div>
+            <div class="control auto"><span class="pulse-dot"></span><span>AUTO-CANNON</span></div>
+          </div>
+        </div>
+
+        <aside class="telemetry" aria-label="Threat profile and best score">
+          <div class="telemetry-panel">
+            <div class="telemetry-head"><span>THREAT PROFILE</span><span class="live"><i></i>LIVE</span></div>
+            <div class="threat-row">
+              <span class="threat-icon scout">▲</span>
+              <span class="threat-copy"><b>WRAITH</b><small>FAST / SWARM</small></span>
+              <span class="threat-code">A-01</span>
+            </div>
+            <div class="threat-row">
+              <span class="threat-icon brute">⬢</span>
+              <span class="threat-copy"><b>GOLIATH</b><small>HEAVY / CONTACT</small></span>
+              <span class="threat-code">B-07</span>
+            </div>
+            <div class="threat-row">
+              <span class="threat-icon sniper">◇</span>
+              <span class="threat-copy"><b>LANCER</b><small>RANGED / BURST</small></span>
+              <span class="threat-code">C-13</span>
+            </div>
+            <div class="best-row">
+              <span>PERSONAL BEST</span>
+              <strong id="bestScoreMenu">000000</strong>
+            </div>
+          </div>
+          <div class="orbit-caption"><span>ORBITAL FRAME</span><i></i><span>SECTOR 07</span></div>
+        </aside>
+      </div>
+
+      <footer class="menu-foot">
+        <span>HOSTILE CONTACT EXPECTED</span>
+        <span class="foot-center"><i></i> SURVIVE. ADAPT. REPEAT. <i></i></span>
+        <span>BUILD 1.0.7 // WEBGL-CLASS 2D</span>
+      </footer>
+    </section>
+
+    <!-- ── In-game HUD ──────────────────────────────────────────── -->
+    <section id="hud" class="hud hidden" aria-label="Game status">
+      <header class="hud-top">
+        <div class="status-panel">
+          <div class="status-head"><span>HULL INTEGRITY</span><b id="hpText">100</b></div>
+          <div class="meter hull-meter"><i id="hpFill"></i><span class="meter-ticks"></span></div>
+          <div class="status-foot">
+            <div class="mini-meter"><span>DASH</span><i><b id="dashFill"></b></i></div>
+            <div id="overdriveTag" class="overdrive-tag">OVERDRIVE</div>
+          </div>
+        </div>
+
+        <div class="wave-panel">
+          <div class="wave-top"><span id="waveKicker">SECTOR</span><strong id="waveNum">01</strong></div>
+          <div class="wave-meta"><span id="enemyCount">6 HOSTILES</span><span id="waveTimer">00:00</span></div>
+          <div class="meter wave-meter"><i id="waveProgress"></i></div>
+        </div>
+
+        <div class="score-panel">
+          <div class="score-block">
+            <span>SCORE</span>
+            <strong id="scoreText">000000</strong>
+          </div>
+          <div id="comboTag" class="combo-tag"><span>COMBO</span><b id="comboText">x1.0</b></div>
+          <div class="hud-buttons">
+            <button id="muteBtn" class="icon-btn" type="button" aria-label="Toggle sound">SND</button>
+            <button id="pauseBtn" class="icon-btn" type="button" aria-label="Pause game">Ⅱ</button>
+          </div>
+        </div>
+      </header>
+
+      <div id="bossBar" class="boss-bar hidden">
+        <div class="boss-head"><span>DREADNOUGHT</span><b id="bossHpText">100%</b></div>
+        <div class="meter"><i id="bossHpFill"></i></div>
+      </div>
+
+      <div id="waveBanner" class="wave-banner" aria-live="polite">
+        <span id="bannerKicker">WAVE 01</span>
+        <strong id="bannerTitle">INCURSION</strong>
+        <i></i>
+      </div>
+
+      <div id="toast" class="toast" aria-live="polite"></div>
+
+      <div class="hud-hint" id="desktopHint">
+        <span><kbd>WASD</kbd> MOVE</span><i></i><span><kbd>MOUSE</kbd> AIM</span><i></i><span><kbd>SPACE</kbd> DASH</span><i></i><span class="auto-hint">AUTO-FIRE ENGAGED</span>
+      </div>
+
+      <div id="touchControls" class="touch-controls">
+        <div class="stick-zone move-zone">
+          <div id="moveStick" class="stick"><div class="stick-rings"></div><div class="stick-label">MOVE</div><div id="moveKnob" class="stick-knob"></div></div>
+        </div>
+        <div class="stick-zone aim-zone">
+          <button id="dashBtn" class="dash-btn" type="button" aria-label="Dash"><span>DASH</span><i id="dashRing"></i></button>
+          <div id="aimStick" class="stick"><div class="stick-rings"></div><div class="stick-label">AIM</div><div id="aimKnob" class="stick-knob"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Pause ─────────────────────────────────────────────────── -->
+    <section id="pauseOverlay" class="overlay hidden" aria-label="Paused">
+      <div class="panel pause-panel">
+        <div class="panel-kicker">SYSTEMS HOLDING</div>
+        <h2>PAUSED</h2>
+        <p>Weapons hot. The void is patient.</p>
+        <div class="panel-actions">
+          <button id="resumeBtn" class="btn btn-primary compact" type="button"><span class="btn-label">Resume</span></button>
+          <button id="quitBtn" class="btn btn-ghost" type="button">Abort Run</button>
+        </div>
+        <div class="panel-note">PRESS <kbd>ESC</kbd> TO RESUME</div>
+      </div>
+    </section>
+
+    <!-- ── Upgrade draft ─────────────────────────────────────────── -->
+    <section id="upgradeOverlay" class="overlay upgrade-overlay hidden" aria-label="Choose an upgrade">
+      <div class="upgrade-head">
+        <div class="panel-kicker">SECTOR CLEAR // SALVAGE ACQUIRED</div>
+        <h2>REFIT THE <em>BREAKER</em></h2>
+        <p>Select one system modification. The swarm adapts. So should you.</p>
+      </div>
+      <div id="upgradeCards" class="upgrade-cards"></div>
+      <div class="upgrade-note">CHOOSE WITH <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> OR CLICK</div>
+    </section>
+
+    <!-- ── Game over ─────────────────────────────────────────────── -->
+    <section id="gameoverOverlay" class="overlay hidden" aria-label="Game over">
+      <div class="panel over-panel">
+        <div class="panel-kicker danger">SIGNAL LOST</div>
+        <h2>RUN <em>TERMINATED</em></h2>
+        <div class="final-stats">
+          <div><span>SCORE</span><strong id="finalScore">000000</strong></div>
+          <div><span>SECTOR</span><strong id="finalWave">01</strong></div>
+          <div><span>KILLS</span><strong id="finalKills">0</strong></div>
+          <div><span>BEST</span><strong id="finalBest">000000</strong></div>
+        </div>
+        <div id="newBestTag" class="new-best hidden">NEW PERSONAL BEST</div>
+        <div class="panel-actions">
+          <button id="restartBtn" class="btn btn-primary compact" type="button"><span class="btn-label">Redeploy</span><span class="btn-arrow" aria-hidden="true">→</span></button>
+          <button id="menuBtn" class="btn btn-ghost" type="button">Main Menu</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="rotateHint" class="rotate-hint" aria-hidden="true">
+      <span>↻</span> ROTATE FOR A WIDER VIEW
+    </div>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
